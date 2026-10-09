@@ -5,6 +5,8 @@ import 'core/theme/app_theme.dart';
 import 'data/repositories/auth_repositorio.dart';
 import 'dependencias.dart';
 import 'modules/auth/acceso_view.dart';
+import 'data/repositories/libros_repositorio.dart';
+import 'modules/estante/estante_controller.dart';
 import 'modules/estante/estante_view.dart';
 import 'routes/rutas.dart';
 
@@ -31,7 +33,13 @@ class EstanteApp extends StatelessWidget {
       initialRoute: rutaInicial,
       getPages: [
         GetPage(name: Rutas.acceso, page: () => const AccesoView()),
-        GetPage(name: Rutas.estante, page: () => const EstanteView()),
+        GetPage(
+          name: Rutas.estante,
+          page: () => const EstanteView(),
+          binding: BindingsBuilder(() {
+            Get.put(EstanteController(Get.find<LibrosRepositorio>()));
+          }),
+        ),
       ],
     );
   }
