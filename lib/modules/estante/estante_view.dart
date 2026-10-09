@@ -6,6 +6,7 @@ import '../../core/widgets/lomo_libro.dart';
 import '../../data/models/libro.dart';
 import '../auth/auth_controller.dart';
 import '../detalle/detalle_view.dart';
+import '../mapa/mapa_view.dart';
 import 'agregar_libro_sheet.dart';
 import 'estante_controller.dart';
 
@@ -33,6 +34,11 @@ class EstanteView extends GetView<EstanteController> {
       appBar: AppBar(
         title: const Text('Estante'),
         actions: [
+          IconButton(
+            tooltip: 'Mapa de lecturas',
+            icon: const Icon(Icons.map_outlined),
+            onPressed: () => Get.to(() => const MapaView()),
+          ),
           IconButton(
             tooltip: 'Cerrar sesión',
             icon: const Icon(Icons.logout),

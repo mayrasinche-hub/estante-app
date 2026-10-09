@@ -7,6 +7,7 @@ import 'dependencias.dart';
 import 'modules/auth/acceso_view.dart';
 import 'data/repositories/libros_repositorio.dart';
 import 'data/storage/sellos_storage.dart';
+import 'data/ubicacion/ubicacion.dart';
 import 'modules/estante/estante_controller.dart';
 import 'modules/estante/estante_view.dart';
 import 'routes/rutas.dart';
@@ -38,7 +39,7 @@ class EstanteApp extends StatelessWidget {
           name: Rutas.estante,
           page: () => const EstanteView(),
           binding: BindingsBuilder(() {
-            Get.put(EstanteController(Get.find<LibrosRepositorio>(), Get.find<RegistroSellos>()));
+            Get.put(EstanteController(Get.find<LibrosRepositorio>(), Get.find<RegistroSellos>(), UbicacionGps()));
           }),
         ),
       ],

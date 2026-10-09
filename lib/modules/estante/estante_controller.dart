@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 
 import '../../data/api/api_error.dart';
@@ -5,14 +7,16 @@ import '../../data/models/libro.dart';
 import '../../data/models/sello.dart';
 import '../../data/repositories/libros_repositorio.dart';
 import '../../data/storage/sellos_storage.dart';
+import '../../data/ubicacion/ubicacion.dart';
 
 enum Carga { cargando, exito, error }
 
 class EstanteController extends GetxController {
-  EstanteController(this._repo, this._registro);
+  EstanteController(this._repo, this._registro, [this._ubicacion]);
 
   final LibrosRepositorio _repo;
   final RegistroSellos _registro;
+  final Ubicacion? _ubicacion;
 
   final libros = <Libro>[].obs;
   final sellos = <int, Sello>{}.obs;
@@ -75,6 +79,7 @@ class EstanteController extends GetxController {
         sellos[libro.id] = sello;
         ultimoSellado.value = libro.id;
         await _registro.guardar(libro.id, sello);
+        unawaited(_anotarLugar(libro.id, sello));
       }
       return null;
     } on ApiError catch (e) {
@@ -97,6 +102,16 @@ class EstanteController extends GetxController {
     } finally {
       guardando.value = false;
     }
+  }
+
+  Future<void> _anotarLugar(int id, Sello sello) async {
+    final punto = await _ubicacion?.actual();
+    if (punto == null) {
+      return;
+    }
+    final conLugar = Sello(fecha: sello.fecha, lat: punto.$1, lng: punto.$2);
+    sellos[id] = conLugar;
+    await _registro.guardar(id, conLugar);
   }
 
   String _texto(ApiError e) =>
