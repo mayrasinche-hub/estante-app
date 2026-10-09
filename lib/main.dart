@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 
 import 'core/theme/app_theme.dart';
 import 'data/repositories/auth_repositorio.dart';
+import 'data/storage/preferencias_storage.dart';
 import 'dependencias.dart';
+import 'modules/ajustes/tema_controller.dart';
 import 'modules/auth/acceso_view.dart';
 import 'data/repositories/libros_repositorio.dart';
 import 'data/storage/sellos_storage.dart';
@@ -15,6 +17,8 @@ import 'routes/rutas.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   registrarDependencias();
+  final preferencias = PreferenciasStorage();
+  Get.put(TemaController(preferencias, await preferencias.leerTema()), permanent: true);
   final haySesion = await Get.find<AuthRepositorio>().haySesion();
   runApp(EstanteApp(rutaInicial: haySesion ? Rutas.estante : Rutas.acceso));
 }
@@ -31,7 +35,7 @@ class EstanteApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.claro,
       darkTheme: AppTheme.oscuro,
-      themeMode: ThemeMode.system,
+      themeMode: Get.find<TemaController>().modo.value,
       initialRoute: rutaInicial,
       getPages: [
         GetPage(name: Rutas.acceso, page: () => const AccesoView()),

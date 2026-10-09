@@ -10,7 +10,7 @@ Future<void> abrirAgregarLibro(BuildContext context) async {
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
-    backgroundColor: Theme.of(context).colorScheme.surface,
+    
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
     ),

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/widgets/lomo_libro.dart';
 import '../../data/models/libro.dart';
-import '../auth/auth_controller.dart';
+import '../ajustes/ajustes_sheet.dart';
 import '../detalle/detalle_view.dart';
 import '../mapa/mapa_view.dart';
 import 'agregar_libro_sheet.dart';
@@ -40,9 +40,9 @@ class EstanteView extends GetView<EstanteController> {
             onPressed: () => Get.to(() => const MapaView()),
           ),
           IconButton(
-            tooltip: 'Cerrar sesión',
-            icon: const Icon(Icons.logout),
-            onPressed: Get.find<AuthController>().cerrarSesion,
+            tooltip: 'Ajustes',
+            icon: const Icon(Icons.tune),
+            onPressed: () => abrirAjustes(context),
           ),
         ],
       ),
