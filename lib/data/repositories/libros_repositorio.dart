@@ -50,7 +50,7 @@ class LibrosRepositorioApi implements LibrosRepositorio {
   Future<Libro> avanzar(Libro libro) async {
     final siguiente = libro.estado.siguiente;
     if (siguiente == null) {
-      throw ApiError('Este libro ya está leído.');
+      throw ApiError('Este libro ya está leído.', codigo: 400);
     }
     try {
       final respuesta = await _cliente.dio.patch(
