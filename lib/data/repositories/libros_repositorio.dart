@@ -7,12 +7,16 @@ abstract class LibrosRepositorio {
   Future<Libro> agregar(String titulo, String autor);
   Future<Libro> avanzar(Libro libro);
   Future<void> eliminar(int id);
+  bool get sinConexion;
 }
 
 class LibrosRepositorioApi implements LibrosRepositorio {
   LibrosRepositorioApi(this._cliente);
 
   final ApiCliente _cliente;
+
+  @override
+  bool get sinConexion => false;
 
   @override
   Future<List<Libro>> listar() async {
