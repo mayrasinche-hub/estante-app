@@ -32,8 +32,8 @@ class AppTheme {
     TextStyle serif(double size, FontWeight peso) =>
         GoogleFonts.fraunces(fontSize: size, fontWeight: peso, color: texto, height: 1.1);
 
-    final textos = GoogleFonts.workSansTextTheme(base.textTheme)
-        .apply(bodyColor: texto, displayColor: texto)
+    final textos = base.textTheme
+        .apply(fontFamily: GoogleFonts.workSans().fontFamily, bodyColor: texto, displayColor: texto)
         .copyWith(
           displaySmall: serif(38, FontWeight.w600),
           headlineMedium: serif(28, FontWeight.w600),
