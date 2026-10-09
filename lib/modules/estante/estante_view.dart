@@ -5,6 +5,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/widgets/lomo_libro.dart';
 import '../../data/models/libro.dart';
 import '../auth/auth_controller.dart';
+import 'agregar_libro_sheet.dart';
 import 'estante_controller.dart';
 
 class EstanteView extends GetView<EstanteController> {
@@ -19,6 +20,15 @@ class EstanteView extends GetView<EstanteController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: Obx(
+        () => controller.estado.value == Carga.exito
+            ? FloatingActionButton.extended(
+                onPressed: () => abrirAgregarLibro(context),
+                icon: const Icon(Icons.add),
+                label: const Text('Agregar libro'),
+              )
+            : const SizedBox.shrink(),
+      ),
       appBar: AppBar(
         title: const Text('Estante'),
         actions: [

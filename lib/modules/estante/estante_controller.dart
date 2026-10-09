@@ -15,6 +15,7 @@ class EstanteController extends GetxController {
   final estado = Carga.cargando.obs;
   final mensajeError = ''.obs;
   final sinConexion = false.obs;
+  final guardando = false.obs;
 
   @override
   void onInit() {
@@ -33,10 +34,53 @@ class EstanteController extends GetxController {
       sinConexion.value = _repo.sinConexion;
       estado.value = Carga.exito;
     } on ApiError catch (e) {
-      mensajeError.value = e.sinConexion
-          ? 'No pudimos conectar con el servidor.'
-          : e.mensaje;
+      mensajeError.value = _texto(e);
       estado.value = Carga.error;
     }
   }
+
+  Future<String?> agregar(String titulo, String autor) async {
+    guardando.value = true;
+    try {
+      libros.add(await _repo.agregar(titulo.trim(), autor.trim()));
+      sinConexion.value = false;
+      return null;
+    } on ApiError catch (e) {
+      return _texto(e);
+    } finally {
+      guardando.value = false;
+    }
+  }
+
+  Future<String?> avanzar(Libro libro) async {
+    guardando.value = true;
+    try {
+      final actualizado = await _repo.avanzar(libro);
+      final i = libros.indexWhere((l) => l.id == libro.id);
+      if (i >= 0) {
+        libros[i] = actualizado;
+      }
+      return null;
+    } on ApiError catch (e) {
+      return _texto(e);
+    } finally {
+      guardando.value = false;
+    }
+  }
+
+  Future<String?> eliminar(Libro libro) async {
+    guardando.value = true;
+    try {
+      await _repo.eliminar(libro.id);
+      libros.removeWhere((l) => l.id == libro.id);
+      return null;
+    } on ApiError catch (e) {
+      return _texto(e);
+    } finally {
+      guardando.value = false;
+    }
+  }
+
+  String _texto(ApiError e) =>
+      e.sinConexion ? 'Sin conexión con el servidor.' : e.mensaje;
 }
