@@ -5,6 +5,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/widgets/lomo_libro.dart';
 import '../../data/models/libro.dart';
 import '../auth/auth_controller.dart';
+import '../detalle/detalle_view.dart';
 import 'agregar_libro_sheet.dart';
 import 'estante_controller.dart';
 
@@ -140,7 +141,7 @@ class _Repisa extends StatelessWidget {
                   for (final l in libros)
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: LomoLibro(titulo: l.titulo, autor: l.autor),
+                      child: Hero(tag: 'lomo-${l.id}', child: LomoLibro(titulo: l.titulo, autor: l.autor, onTap: () => Get.to(() => DetalleView(libroId: l.id)))),
                     ),
                 ],
               ),
