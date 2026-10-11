@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../i18n/fechas.dart';
 
 class SelloLeido extends StatelessWidget {
   const SelloLeido({super.key, this.fecha, this.animar = false});
@@ -7,13 +10,11 @@ class SelloLeido extends StatelessWidget {
   final DateTime? fecha;
   final bool animar;
 
-  static const _meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.primary;
     final f = fecha;
-    final texto = f == null ? null : '${f.day} ${_meses[f.month - 1]} ${f.year}';
+    final texto = f == null ? null : fechaCorta(f);
 
     final sello = Transform.rotate(
       angle: -0.14,
@@ -33,7 +34,7 @@ class SelloLeido extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'LEÍDO',
+                'LEÍDO'.tr,
                 style: GoogleFonts.fraunces(
                   fontSize: 34,
                   fontWeight: FontWeight.w800,
@@ -58,7 +59,7 @@ class SelloLeido extends StatelessWidget {
     );
 
     return Semantics(
-      label: texto == null ? 'Libro leído' : 'Libro leído el $texto',
+      label: texto == null ? 'Libro leído'.tr : 'Libro leído el @f'.trParams({'f': texto}),
       excludeSemantics: true,
       child: TweenAnimationBuilder<double>(
         tween: Tween(begin: animar ? 0.0 : 1.0, end: 1.0),

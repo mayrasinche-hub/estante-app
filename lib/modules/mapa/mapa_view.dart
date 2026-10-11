@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../core/i18n/fechas.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/theme/paleta_lomo.dart';
 import '../../data/models/libro.dart';
@@ -11,13 +12,11 @@ import '../estante/estante_controller.dart';
 class MapaView extends StatelessWidget {
   const MapaView({super.key});
 
-  static const _meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-
   @override
   Widget build(BuildContext context) {
     final c = Get.find<EstanteController>();
     return Scaffold(
-      appBar: AppBar(title: const Text('Mapa de lecturas')),
+      appBar: AppBar(title: Text('Mapa de lecturas'.tr)),
       body: Obx(() {
         final puntos = [
           for (final l in c.libros)
@@ -62,7 +61,9 @@ class MapaView extends StatelessWidget {
   void _mostrar(BuildContext context, Libro libro, DateTime f) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('«${libro.titulo}» · lo terminaste el ${f.day} ${_meses[f.month - 1]} ${f.year}'),
+        content: Text(
+          '«@t» · lo terminaste el @f'.trParams({'t': libro.titulo, 'f': fechaCorta(f)}),
+        ),
       ),
     );
   }
@@ -79,7 +80,7 @@ class _Pin extends StatelessWidget {
     final color = PaletaLomo.color(libro.titulo);
     return Semantics(
       button: true,
-      label: '${libro.titulo}, terminado aquí',
+      label: '@t, terminado aquí'.trParams({'t': libro.titulo}),
       excludeSemantics: true,
       child: GestureDetector(
         onTap: alTocar,
@@ -129,10 +130,10 @@ class _SinPuntos extends StatelessWidget {
           children: [
             Icon(Icons.map_outlined, size: 56, color: tema.colorScheme.primary),
             const SizedBox(height: AppSpacing.md),
-            Text('Tu mapa está en blanco', style: tema.textTheme.headlineSmall),
+            Text('Tu mapa está en blanco'.tr, style: tema.textTheme.headlineSmall),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Cuando termines un libro con la ubicación activada, su lomo aparecerá en el lugar donde lo cerraste.',
+              'Cuando termines un libro con la ubicación activada, su lomo aparecerá en el lugar donde lo cerraste.'.tr,
               textAlign: TextAlign.center,
               style: tema.textTheme.bodyMedium?.copyWith(
                 color: tema.colorScheme.onSurface.withValues(alpha: 0.7),

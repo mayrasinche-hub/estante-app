@@ -58,8 +58,8 @@ class _AccesoViewState extends State<AccesoView> {
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         registro
-                            ? 'Abre tu biblioteca personal.'
-                            : 'Tus libros te estaban esperando.',
+                            ? 'Abre tu biblioteca personal.'.tr
+                            : 'Tus libros te estaban esperando.'.tr,
                         style: tema.textTheme.bodyLarge?.copyWith(color: suave),
                       ),
                       const SizedBox(height: AppSpacing.xl),
@@ -68,7 +68,7 @@ class _AccesoViewState extends State<AccesoView> {
                         keyboardType: TextInputType.emailAddress,
                         autofillHints: const [AutofillHints.email],
                         textInputAction: TextInputAction.next,
-                        decoration: const InputDecoration(labelText: 'Correo'),
+                        decoration: InputDecoration(labelText: 'Correo'.tr),
                         validator: _c.validarEmail,
                       ),
                       const SizedBox(height: AppSpacing.md),
@@ -79,11 +79,11 @@ class _AccesoViewState extends State<AccesoView> {
                         textInputAction: TextInputAction.done,
                         onFieldSubmitted: (_) => _enviar(),
                         decoration: InputDecoration(
-                          labelText: 'Contraseña',
+                          labelText: 'Contraseña'.tr,
                           suffixIcon: IconButton(
                             tooltip: _c.ocultarClave.value
-                                ? 'Mostrar contraseña'
-                                : 'Ocultar contraseña',
+                                ? 'Mostrar contraseña'.tr
+                                : 'Ocultar contraseña'.tr,
                             icon: Icon(
                               _c.ocultarClave.value
                                   ? Icons.visibility_outlined
@@ -110,13 +110,13 @@ class _AccesoViewState extends State<AccesoView> {
                                   color: tema.colorScheme.onPrimary,
                                 ),
                               )
-                            : Text(registro ? 'Crear cuenta' : 'Entrar'),
+                            : Text(registro ? 'Crear cuenta'.tr : 'Entrar'.tr),
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       TextButton(
                         onPressed: cargando ? null : _c.alternarModo,
                         child: Text(
-                          registro ? 'Ya tengo cuenta' : 'Soy nuevo, crear cuenta',
+                          registro ? 'Ya tengo cuenta'.tr : 'Soy nuevo, crear cuenta'.tr,
                         ),
                       ),
                     ],

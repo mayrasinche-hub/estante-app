@@ -32,6 +32,9 @@ llega a *leído*, cae un sello con la fecha y el lugar donde lo terminaste.
 - Modo sin conexión: si el servidor no responde, se muestra el último
   estante guardado con un aviso.
 - Tema claro, oscuro o del sistema, guardado entre sesiones.
+- Buscador por título o autor, sin importar tildes ni mayúsculas.
+- Disponible en español e inglés.
+- Ícono propio de la app.
 
 ## Decisiones de diseño
 
@@ -88,7 +91,7 @@ Para probar el mapa en el emulador, se puede fijar la ubicación en Loja:
 
     flutter test
 
-14 tests sobre el modelo, el controlador del estante y la caché:
+21 tests sobre el modelo, el controlador del estante, el buscador, la caché y la pantalla de acceso:
 
 - el estado solo avanza un paso y nunca retrocede;
 - un libro nuevo siempre llega a *En espera*;

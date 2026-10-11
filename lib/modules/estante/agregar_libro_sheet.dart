@@ -10,7 +10,6 @@ Future<void> abrirAgregarLibro(BuildContext context) async {
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
-    
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
     ),
@@ -18,7 +17,7 @@ Future<void> abrirAgregarLibro(BuildContext context) async {
   );
   if (agregado == true && context.mounted) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Listo. Quedó en la repisa «En espera».')),
+      SnackBar(content: Text('Listo. Quedó en la repisa «En espera».'.tr)),
     );
   }
 }
@@ -44,8 +43,8 @@ class _AgregarLibroSheetState extends State<_AgregarLibroSheet> {
     super.dispose();
   }
 
-  String? _requerido(String? valor, String campo) =>
-      (valor == null || valor.trim().isEmpty) ? 'Escribe el $campo' : null;
+  String? _requerido(String? valor, String mensaje) =>
+      (valor == null || valor.trim().isEmpty) ? mensaje.tr : null;
 
   Future<void> _guardar() async {
     if (!(_form.currentState?.validate() ?? false)) {
@@ -96,7 +95,7 @@ class _AgregarLibroSheetState extends State<_AgregarLibroSheet> {
                           child: ValueListenableBuilder<TextEditingValue>(
                             valueListenable: _titulo,
                             builder: (context, valor, child) => LomoLibro(
-                              titulo: valor.text.trim().isEmpty ? 'Tu libro' : valor.text.trim(),
+                              titulo: valor.text.trim().isEmpty ? 'Tu libro'.tr : valor.text.trim(),
                               autor: '',
                             ),
                           ),
@@ -121,10 +120,10 @@ class _AgregarLibroSheetState extends State<_AgregarLibroSheet> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Nuevo libro', style: tema.textTheme.headlineSmall),
+                        Text('Nuevo libro'.tr, style: tema.textTheme.headlineSmall),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
-                          'Su lomo toma color según el título. Llegará a la repisa «En espera».',
+                          'Su lomo toma color según el título. Llegará a la repisa «En espera».'.tr,
                           style: tema.textTheme.bodyMedium?.copyWith(color: suave),
                         ),
                       ],
@@ -139,8 +138,8 @@ class _AgregarLibroSheetState extends State<_AgregarLibroSheet> {
               autofocus: true,
               textCapitalization: TextCapitalization.sentences,
               textInputAction: TextInputAction.next,
-              decoration: const InputDecoration(labelText: 'Título'),
-              validator: (v) => _requerido(v, 'título'),
+              decoration: InputDecoration(labelText: 'Título'.tr),
+              validator: (v) => _requerido(v, 'Escribe el título'),
             ),
             const SizedBox(height: AppSpacing.md),
             TextFormField(
@@ -148,8 +147,8 @@ class _AgregarLibroSheetState extends State<_AgregarLibroSheet> {
               textCapitalization: TextCapitalization.words,
               textInputAction: TextInputAction.done,
               onFieldSubmitted: (_) => _guardar(),
-              decoration: const InputDecoration(labelText: 'Autor'),
-              validator: (v) => _requerido(v, 'autor'),
+              decoration: InputDecoration(labelText: 'Autor'.tr),
+              validator: (v) => _requerido(v, 'Escribe el autor'),
             ),
             if (_error != null) ...[
               const SizedBox(height: AppSpacing.md),
@@ -168,7 +167,7 @@ class _AgregarLibroSheetState extends State<_AgregarLibroSheet> {
                           color: tema.colorScheme.onPrimary,
                         ),
                       )
-                    : const Text('Poner en el estante'),
+                    : Text('Poner en el estante'.tr),
               ),
             ),
           ],

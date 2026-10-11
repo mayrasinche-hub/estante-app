@@ -25,6 +25,7 @@ class EstanteController extends GetxController {
   final sinConexion = false.obs;
   final guardando = false.obs;
   final ultimoSellado = RxnInt();
+  final busqueda = ''.obs;
 
   @override
   void onInit() {
@@ -33,9 +34,27 @@ class EstanteController extends GetxController {
     _cargarSellos();
   }
 
-  List<Libro> de(EstadoLibro e) => libros.where((l) => l.estado == e).toList();
+  List<Libro> de(EstadoLibro e) =>
+      libros.where((l) => l.estado == e && _coincide(l)).toList();
+
+  bool get hayResultados => libros.any(_coincide);
 
   Libro? porId(int id) => libros.firstWhereOrNull((l) => l.id == id);
+
+  bool _coincide(Libro l) {
+    final q = _normalizar(busqueda.value);
+    return q.isEmpty || _normalizar(l.titulo).contains(q) || _normalizar(l.autor).contains(q);
+  }
+
+  static String _normalizar(String texto) {
+    const con = 'áéíóúüñ';
+    const sin = 'aeiouun';
+    var r = texto.toLowerCase().trim();
+    for (var i = 0; i < con.length; i++) {
+      r = r.replaceAll(con[i], sin[i]);
+    }
+    return r;
+  }
 
   Future<void> _cargarSellos() async => sellos.assignAll(await _registro.todos());
 
@@ -115,5 +134,5 @@ class EstanteController extends GetxController {
   }
 
   String _texto(ApiError e) =>
-      e.sinConexion ? 'Sin conexión con el servidor.' : e.mensaje;
+      e.sinConexion ? 'Sin conexión con el servidor.'.tr : e.mensaje;
 }

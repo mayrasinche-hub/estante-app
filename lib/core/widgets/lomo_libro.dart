@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../theme/paleta_lomo.dart';
@@ -27,7 +28,7 @@ class LomoLibro extends StatelessWidget {
 
     return Semantics(
       button: onTap != null,
-      label: 'Libro $titulo, de $autor',
+      label: 'Libro @t, de @a'.trParams({'t': titulo, 'a': autor}),
       excludeSemantics: true,
       child: GestureDetector(
         onTap: onTap,

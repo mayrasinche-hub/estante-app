@@ -3,12 +3,11 @@ import 'package:get/get.dart';
 
 import '../../core/theme/app_tokens.dart';
 import '../auth/auth_controller.dart';
-import 'tema_controller.dart';
+import 'ajustes_controller.dart';
 
 Future<void> abrirAjustes(BuildContext context) => showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
-      
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
       ),
@@ -21,52 +20,63 @@ class _AjustesSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tema = Theme.of(context);
-    final c = Get.find<TemaController>();
+    final c = Get.find<AjustesController>();
 
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.lg),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text('Ajustes', style: tema.textTheme.headlineSmall),
-            const SizedBox(height: AppSpacing.lg),
-            Text('Apariencia', style: tema.textTheme.titleMedium),
-            const SizedBox(height: AppSpacing.sm),
-            Obx(
-              () => SegmentedButton<ThemeMode>(
-                segments: const [
+        child: Obx(
+          () => Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text('Ajustes'.tr, style: tema.textTheme.headlineSmall),
+              const SizedBox(height: AppSpacing.lg),
+              Text('Apariencia'.tr, style: tema.textTheme.titleMedium),
+              const SizedBox(height: AppSpacing.sm),
+              SegmentedButton<ThemeMode>(
+                segments: [
                   ButtonSegment(
                     value: ThemeMode.light,
-                    icon: Icon(Icons.light_mode_outlined),
-                    label: Text('Claro'),
+                    icon: const Icon(Icons.light_mode_outlined),
+                    label: Text('Claro'.tr),
                   ),
                   ButtonSegment(
                     value: ThemeMode.dark,
-                    icon: Icon(Icons.dark_mode_outlined),
-                    label: Text('Oscuro'),
+                    icon: const Icon(Icons.dark_mode_outlined),
+                    label: Text('Oscuro'.tr),
                   ),
                   ButtonSegment(
                     value: ThemeMode.system,
-                    icon: Icon(Icons.phone_android),
-                    label: Text('Sistema'),
+                    icon: const Icon(Icons.phone_android),
+                    label: Text('Sistema'.tr),
                   ),
                 ],
                 selected: {c.modo.value},
-                onSelectionChanged: (s) => c.cambiar(s.first),
+                onSelectionChanged: (s) => c.cambiarTema(s.first),
               ),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            OutlinedButton.icon(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Get.find<AuthController>().cerrarSesion();
-              },
-              icon: const Icon(Icons.logout),
-              label: const Text('Cerrar sesión'),
-            ),
-          ],
+              const SizedBox(height: AppSpacing.lg),
+              Text('Idioma'.tr, style: tema.textTheme.titleMedium),
+              const SizedBox(height: AppSpacing.sm),
+              SegmentedButton<String>(
+                segments: const [
+                  ButtonSegment(value: 'es', label: Text('Español')),
+                  ButtonSegment(value: 'en', label: Text('English')),
+                ],
+                selected: {c.idioma.value},
+                onSelectionChanged: (s) => c.cambiarIdioma(s.first),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Get.find<AuthController>().cerrarSesion();
+                },
+                icon: const Icon(Icons.logout),
+                label: Text('Cerrar sesión'.tr),
+              ),
+            ],
+          ),
         ),
       ),
     );

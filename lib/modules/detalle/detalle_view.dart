@@ -30,7 +30,7 @@ class DetalleView extends StatelessWidget {
         appBar: AppBar(
           actions: [
             IconButton(
-              tooltip: 'Quitar del estante',
+              tooltip: 'Quitar del estante'.tr,
               icon: const Icon(Icons.delete_outline),
               onPressed: c.guardando.value ? null : () => _confirmarEliminar(context, c, libro),
             ),
@@ -83,8 +83,8 @@ class DetalleView extends StatelessWidget {
                     Marcapaginas(
                       key: ValueKey(libro.estado),
                       texto: libro.estado == EstadoLibro.porLeer
-                          ? 'Desliza para empezar a leer'
-                          : 'Desliza cuando lo termines',
+                          ? 'Desliza para empezar a leer'.tr
+                          : 'Desliza cuando lo termines'.tr,
                       color: color,
                       ocupado: c.guardando.value,
                       alCompletar: () async {
@@ -107,17 +107,17 @@ class DetalleView extends StatelessWidget {
     final confirmado = await showDialog<bool>(
       context: context,
       builder: (dialogo) => AlertDialog(
-        title: const Text('¿Quitar este libro?'),
-        content: Text('«${libro.titulo}» saldrá de tu estante. No se puede deshacer.'),
+        title: Text('¿Quitar este libro?'.tr),
+        content: Text('«@t» saldrá de tu estante. No se puede deshacer.'.trParams({'t': libro.titulo})),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogo, false),
-            child: const Text('Cancelar'),
+            child: Text('Cancelar'.tr),
           ),
           TextButton(
             onPressed: () => Navigator.pop(dialogo, true),
             style: TextButton.styleFrom(foregroundColor: Theme.of(dialogo).colorScheme.error),
-            child: const Text('Quitar'),
+            child: Text('Quitar'.tr),
           ),
         ],
       ),
@@ -131,7 +131,9 @@ class DetalleView extends StatelessWidget {
       if (context.mounted) {
         Navigator.of(context).pop();
       }
-      mensajero.showSnackBar(SnackBar(content: Text('Quitaste «${libro.titulo}» del estante.')));
+      mensajero.showSnackBar(
+        SnackBar(content: Text('Quitaste «@t» del estante.'.trParams({'t': libro.titulo}))),
+      );
     } else {
       mensajero.showSnackBar(SnackBar(content: Text(error)));
     }
@@ -153,7 +155,7 @@ class _Recorrido extends StatelessWidget {
     final actual = estado.index;
 
     return Semantics(
-      label: 'Estado: ${_nombres[actual]}',
+      label: 'Estado: @e'.trParams({'e': _nombres[actual].tr}),
       excludeSemantics: true,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,7 +189,7 @@ class _Recorrido extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  _nombres[i],
+                  _nombres[i].tr,
                   style: tema.textTheme.labelMedium?.copyWith(
                     fontWeight: i == actual ? FontWeight.w700 : FontWeight.w400,
                     color: i > actual ? tema.colorScheme.onSurface.withValues(alpha: 0.5) : null,

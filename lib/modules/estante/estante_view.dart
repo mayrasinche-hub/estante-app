@@ -27,7 +27,7 @@ class EstanteView extends GetView<EstanteController> {
             ? FloatingActionButton.extended(
                 onPressed: () => abrirAgregarLibro(context),
                 icon: const Icon(Icons.add),
-                label: const Text('Agregar libro'),
+                label: Text('Agregar libro'.tr),
               )
             : const SizedBox.shrink(),
       ),
@@ -35,12 +35,12 @@ class EstanteView extends GetView<EstanteController> {
         title: const Text('Estante'),
         actions: [
           IconButton(
-            tooltip: 'Mapa de lecturas',
+            tooltip: 'Mapa de lecturas'.tr,
             icon: const Icon(Icons.map_outlined),
             onPressed: () => Get.to(() => const MapaView()),
           ),
           IconButton(
-            tooltip: 'Ajustes',
+            tooltip: 'Ajustes'.tr,
             icon: const Icon(Icons.tune),
             onPressed: () => abrirAjustes(context),
           ),
@@ -64,6 +64,7 @@ class EstanteView extends GetView<EstanteController> {
   Widget _contenido(BuildContext context) {
     final tema = Theme.of(context);
     final libros = controller.libros;
+    final suave = tema.colorScheme.onSurface.withValues(alpha: 0.7);
     return RefreshIndicator(
       onRefresh: controller.cargar,
       child: Center(
@@ -76,16 +77,27 @@ class EstanteView extends GetView<EstanteController> {
               if (controller.sinConexion.value) const _AvisoSinConexion(),
               Text(
                 _resumen(libros.length),
-                style: tema.textTheme.bodyLarge?.copyWith(
-                  color: tema.colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
+                style: tema.textTheme.bodyLarge?.copyWith(color: suave),
               ),
               const SizedBox(height: AppSpacing.lg),
               if (libros.isEmpty)
                 const _EstanteVacio()
-              else
-                for (final e in EstadoLibro.values)
-                  _Repisa(titulo: _repisas[e]!, libros: controller.de(e)),
+              else ...[
+                _Buscador(c: controller),
+                const SizedBox(height: AppSpacing.lg),
+                if (!controller.hayResultados)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppSpacing.lg),
+                    child: Text(
+                      'Nada coincide con «@q».'.trParams({'q': controller.busqueda.value.trim()}),
+                      textAlign: TextAlign.center,
+                      style: tema.textTheme.bodyLarge?.copyWith(color: suave),
+                    ),
+                  )
+                else
+                  for (final e in EstadoLibro.values)
+                    _Repisa(titulo: _repisas[e]!.tr, libros: controller.de(e)),
+              ],
             ],
           ),
         ),
@@ -94,10 +106,55 @@ class EstanteView extends GetView<EstanteController> {
   }
 
   String _resumen(int n) => switch (n) {
-        0 => 'Empecemos tu biblioteca.',
-        1 => '1 libro en tu biblioteca.',
-        _ => '$n libros en tu biblioteca.',
+        0 => 'Empecemos tu biblioteca.'.tr,
+        1 => '1 libro en tu biblioteca.'.tr,
+        _ => '@n libros en tu biblioteca.'.trParams({'n': '$n'}),
       };
+}
+
+class _Buscador extends StatefulWidget {
+  const _Buscador({required this.c});
+
+  final EstanteController c;
+
+  @override
+  State<_Buscador> createState() => _BuscadorState();
+}
+
+class _BuscadorState extends State<_Buscador> {
+  late final _texto = TextEditingController(text: widget.c.busqueda.value);
+
+  @override
+  void dispose() {
+    _texto.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: _texto,
+      onChanged: (v) => widget.c.busqueda.value = v,
+      textInputAction: TextInputAction.search,
+      decoration: InputDecoration(
+        hintText: 'Buscar por título o autor'.tr,
+        prefixIcon: const Icon(Icons.search),
+        suffixIcon: ValueListenableBuilder<TextEditingValue>(
+          valueListenable: _texto,
+          builder: (context, valor, child) => valor.text.isEmpty
+              ? const SizedBox.shrink()
+              : IconButton(
+                  tooltip: 'Limpiar búsqueda'.tr,
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    _texto.clear();
+                    widget.c.busqueda.value = '';
+                  },
+                ),
+        ),
+      ),
+    );
+  }
 }
 
 class _Repisa extends StatelessWidget {
@@ -130,7 +187,7 @@ class _Repisa extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                   child: Text(
-                    'Nada por aquí todavía.',
+                    'Nada por aquí todavía.'.tr,
                     style: tema.textTheme.bodyMedium?.copyWith(
                       color: tema.colorScheme.onSurface.withValues(alpha: 0.55),
                     ),
@@ -147,7 +204,14 @@ class _Repisa extends StatelessWidget {
                   for (final l in libros)
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: Hero(tag: 'lomo-${l.id}', child: LomoLibro(titulo: l.titulo, autor: l.autor, onTap: () => Get.to(() => DetalleView(libroId: l.id)))),
+                      child: Hero(
+                        tag: 'lomo-${l.id}',
+                        child: LomoLibro(
+                          titulo: l.titulo,
+                          autor: l.autor,
+                          onTap: () => Get.to(() => DetalleView(libroId: l.id)),
+                        ),
+                      ),
                     ),
                 ],
               ),
@@ -193,7 +257,7 @@ class _Contador extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.primary;
     return Semantics(
-      label: '$n libros',
+      label: '@n libros'.trParams({'n': '$n'}),
       excludeSemantics: true,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 2),
@@ -229,7 +293,7 @@ class _EstanteVacio extends StatelessWidget {
                 child: Transform.rotate(
                   angle: -0.18,
                   alignment: Alignment.bottomRight,
-                  child: const LomoLibro(titulo: 'Tu primer libro', autor: ''),
+                  child: LomoLibro(titulo: 'Tu primer libro'.tr, autor: ''),
                 ),
               ),
             ],
@@ -238,13 +302,13 @@ class _EstanteVacio extends StatelessWidget {
         const _Tabla(ancho: 200),
         const SizedBox(height: AppSpacing.lg),
         Text(
-          'Tu estante está esperando\nsu primer libro.',
+          'Tu estante está esperando\nsu primer libro.'.tr,
           textAlign: TextAlign.center,
           style: tema.textTheme.headlineSmall,
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          'Toca «Agregar libro» para empezar.',
+          'Toca «Agregar libro» para empezar.'.tr,
           style: tema.textTheme.bodyMedium?.copyWith(
             color: tema.colorScheme.onSurface.withValues(alpha: 0.7),
           ),
@@ -268,12 +332,12 @@ class _AvisoSinConexion extends StatelessWidget {
           color: AppColors.ocre.withValues(alpha: 0.22),
           borderRadius: BorderRadius.circular(AppRadius.md),
         ),
-        child: const Row(
+        child: Row(
           children: [
-            Icon(Icons.cloud_off_outlined),
-            SizedBox(width: AppSpacing.sm),
+            const Icon(Icons.cloud_off_outlined),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
-              child: Text('Sin conexión. Te mostramos tu último estante guardado.'),
+              child: Text('Sin conexión. Te mostramos tu último estante guardado.'.tr),
             ),
           ],
         ),
@@ -289,7 +353,7 @@ class _Esqueleto extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.07);
     return Semantics(
-      label: 'Cargando tu estante',
+      label: 'Cargando tu estante'.tr,
       child: ListView(
         physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -345,7 +409,7 @@ class _Error extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
               Text(mensaje, textAlign: TextAlign.center, style: tema.textTheme.titleMedium),
               const SizedBox(height: AppSpacing.lg),
-              FilledButton(onPressed: alReintentar, child: const Text('Reintentar')),
+              FilledButton(onPressed: alReintentar, child: Text('Reintentar'.tr)),
             ],
           ),
         ),

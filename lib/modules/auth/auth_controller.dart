@@ -24,10 +24,10 @@ class AuthController extends GetxController {
   String? validarEmail(String? valor) {
     final texto = valor?.trim() ?? '';
     if (texto.isEmpty) {
-      return 'Escribe tu correo';
+      return 'Escribe tu correo'.tr;
     }
     if (!texto.contains('@') || !texto.contains('.')) {
-      return 'Ese correo no parece válido';
+      return 'Ese correo no parece válido'.tr;
     }
     return null;
   }
@@ -35,10 +35,10 @@ class AuthController extends GetxController {
   String? validarClave(String? valor) {
     final texto = valor ?? '';
     if (texto.isEmpty) {
-      return 'Escribe tu contraseña';
+      return 'Escribe tu contraseña'.tr;
     }
     if (modoRegistro.value && texto.length < 6) {
-      return 'Usa al menos 6 caracteres';
+      return 'Usa al menos 6 caracteres'.tr;
     }
     return null;
   }
@@ -67,10 +67,10 @@ class AuthController extends GetxController {
 
   String _mensaje(ApiError e) {
     if (e.sinConexion) {
-      return 'No pudimos conectar con el servidor. Revisa que el backend esté encendido.';
+      return 'No pudimos conectar con el servidor. Revisa que el backend esté encendido.'.tr;
     }
     if (e.codigo == 401) {
-      return 'Correo o contraseña incorrectos.';
+      return 'Correo o contraseña incorrectos.'.tr;
     }
     return e.mensaje;
   }
